@@ -17,17 +17,28 @@ var GO = {
   gameCount:0
 };
 
-$(document).ready(function() {
-  if (GO.gameCount==0) {
-    //modal who would you like to play as?
-    console.log("x or O");
-  }
-  computerTurn();
+$( function() {
+  
 });
 
-function addText(text) {
-  $('div.info').empty().append(text);
+function choosePlayer(callback) {
+   var info=$('div.info');
+   info.empty().append("Choose to play as X/O:<br />");
+   info.append('<span><button id="X"><i class="fa fa-times fa-3x" aria-hidden="true"></i></button>');
+   info.append(' | ');
+   info.append('<button id="O"><i class="fa fa-circle-o fa-3x" aria-hidden="true"></i></button></span>');
+  $('div.info button').click(function(){
+    var id = $(this).attr('id');
+    (id=="X") ? GO.computerToken="O" : GO.computerToken="X";
+    info.empty().append("Cool, playing as "+id);
+    callback();
+  });
 }
+
+$(document).ready(function() {
+if (GO.gameCount==0) { choosePlayer(computerTurn); }
+else { computerTurn(); }
+});
 
 function resetGame() {
   GO.board=Array(9).fill(0);
@@ -50,19 +61,22 @@ function computerTurn() {
   doWeGoOn();
   playerTurn();
 }
+
 function playerTurn() {
   clickHandler(callMeMaybe);
   drawBoard();
 }
+
 function callMeMaybe()
 {
   doWeGoOn();
   if (!GO.isOver) { computerTurn(); }
 }
+
 function doWeGoOn() {
   var winner=checkWinner();
   if (winner) {
-    addText("Winner: "+GO.board[winner[0]]);
+    addText("<em>Winner: "+GO.board[winner[0]]+"</em>");
     highlightWin(winner);
     console.log("O_wins:" +GO.O_wins);
     var tok=GO.board[winner[0]]+"_wins";
@@ -89,19 +103,6 @@ function highlightWin(winArr) {
   },GO.FLASH_RATE);
 }
 
- function changeTurn(){
-      if(GO.currentPlayer == "X"){
-           GO.currentPlayer = "O";
-           GO.turn++;
-      } else {
-           GO.currentPlayer = "X";
-           GO.turn++;
-      }
-    }
-
-//can programatically generate div or do so flexibly
-//also programatically vary font size in CSS for icons
-
 function drawBoard() {
   var app=document.getElementById('app');
   for (var i=0;i<GO.board.length;i++){
@@ -125,7 +126,12 @@ function checkWinner() {
     return false;
   }
 
-function computerMove(token) { //for now, naive AI: can we win in one move? if so play it, if not, play a random open square
+//for now, naive AI, no real minimax
+//loop through win combinations
+//can we win by playing an empty square in any given win combination?
+//if so play it and win
+//if not, play a random open square
+function computerMove(token) { 
   var move;
   for (var i=0;i<GO.winCombos.length;i++) {
     var t1=GO.board[GO.winCombos[i][0]];
@@ -134,56 +140,50 @@ function computerMove(token) { //for now, naive AI: can we win in one move? if s
     var occup=numXO([t1,t2,t3]); //returns [num_x, num_o] for the given win combination on the board
     var myNum;
     var oppNum;
-    if (token=="X") {
-      myNum=occup[0]; 
-      oppNum=occup[1];
+    if (token=="X") { //find out how many of a given win combination of 3 are currently TOKEN
+      myNum=occup[0]; //if 2 of 3 are currently TOKEN and the other one is empty
+      oppNum=occup[1]; //we can win by playing the empty
     }
     else {
       myNum=occup[1]; 
       oppNum=occup[0];
     }
-    if ((myNum==2)&&(oppNum==0)) { //we can win, play the empty squre
+    if ((myNum==2)&&(oppNum==0)) { //we can win, so play the empty squre
       if (t1!==token) {move=GO.winCombos[i][0];}
       if (t2!==token) {move=GO.winCombos[i][1];}
       if (t3!==token) {move=GO.winCombos[i][2];}
       playMove(move,token);
       GO.turn++;
-     // console.log("win move:"+move+" by: "+token);
-     // console.log("Win combo:"+GO.winCombos[i]);
       GO.isOver=true;
       return true;
     }
   }
-  //we can't win so play a random open square instead
-  playRandom(token);
+  playRandom(token); //we can't win so play a random open square instead
   GO.turn++;
 }
 
 function playRandom(token) {
   var openIndices=[];
-  for (var i=0;i<GO.board.length;i++) {
-    if(!isOccupied(i)){openIndices.push(i);}
-  }
+  for (var i=0;i<GO.board.length;i++) { if(!isOccupied(i)){openIndices.push(i);} }
   var randomIndex=Math.floor(Math.random()*openIndices.length);
   if(openIndices[randomIndex]!==null) { playMove(openIndices[randomIndex],token); }
 }
   
 function playMove(pos, token) {
-  if (validMove(pos)&&!isOccupied(pos)) {
-    GO.board[pos]=token; //update board
-  }
-  else {
-    console.log(pos+" "+token);
-    throw ("invalid move");
-  }
+  if (validMove(pos)&&!isOccupied(pos)) { GO.board[pos]=token; } //update board
+  else { console.log(pos+" "+token); throw ("invalid move"); }
 }
 //some helper functions
 function isOccupied(pos) { return ((GO.board[pos]=="X")||(GO.board[pos]=="O")) ? true : false; }
 function validMove(pos) { return ((-1<pos<9)&&(GO.board[pos]==0)) ? true : false; }
-
-//returns the number of filled spaces on the board
+function addText(text) { $('div.info').empty().append(text); }
 function spacesFull() { return GO.board.reduce(function(n,val){return n+(val!==0);},0); }
 function boardFull() { return (spacesFull()==9); }
+
+function currentPlayer() { 
+  var pos=numXO(); //returns [num_x, num_o] tokens on board
+  return (pos[0]>pos[1]) ? "O" : "X";
+}
 
 function numXO(arr=GO.board) {
   var numX=arr.reduce(function(n,val){return n+(((val!==0)&&val!=="")&&(val!=="O"));},0);
@@ -191,12 +191,8 @@ function numXO(arr=GO.board) {
   return [numX, numO];
 }
 
-function currentPlayer() { 
-  var pos=numXO(); //returns [num_x, num_o] tokens on board
-  return (pos[0]>pos[1]) ? "O" : "X";
-}
-
-function clickHandler(e) { //div on-hover logic and on-click logic for placing moves
+//Click handling to place moves and div on-mouse-over formatting logic
+function clickHandler(e) { 
   $('div.cell').click(function(){
     var id = $(this).attr('id');
     var id_num=GO.wordToNum[id];

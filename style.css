@@ -4,29 +4,26 @@
 }
 
 body {
-  background-color: #CCC;
+  background-color: #EEE;
 }
 
-canvas {
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  margin: auto;
+div.container {
+  padding: 20px;
+  width: 260px;
+  margin: 0 auto;
+  background-color: black;
 }
 
 div.app {
   padding: 10px;
-  margin: 10px auto;
-  width: 180px;
+  margin: 10px;
+  width: 240px;
+  margin: 0 auto;
+  height: 300px;
   border-style: solid;
   border-width: 1px;
   border-color: black;
-}
-
-div.board {
- border-style: solid;
-  border-width: 1px;
-  border-color: black; 
+  background-color: #BBB;
 }
 
 div.cell {
@@ -44,45 +41,41 @@ div.cell {
 }
 
 div.info {
-  font-family: Courier New;
-  display: inline-block;
+  font-family: Courier;
+  vertical-align: middle;
+  text-align: center;
   height: auto;
   width: 230px;
+  height: 70px;
   margin: 0px;
-  padding: 0 px;
+  padding: 0px;
   border-style: solid;
   border-radius: 5px;
 }
 
-div.control:hover {
-  opacity: 0.7;
-  border-width: 0 3px 3px 0;
+div.info em {
+  animation: textWarp .75s infinite;
+  font-size: 36px;
+  text-shadow: 0px 0px 2px #B700E5,
+               1px 1px 3px #1505E2,
+               2px 2px 3px #0A94DF,
+               4px 4px 3px #0FDC8F,
+               5px 5px 3px #26D913,
+               7px 7px 3px #B3D518,
+               8px 8px 3px #D26F1C
 }
 
-div.control#red {
-  background: red;
-  border-radius: 100px 0 0 0;
-    -moz-border-radius: 100px 0 0 0;
-    -webkit-border-radius: 100px 0 0 0;
+div.info span {
+  vertical-align: middle;
+  text-align: center;
 }
 
-div.control#green {
-  background: green;
-  border-radius: 0 100px 0 0;
-    -moz-border-radius: 0 100px 0 0;
-    -webkit-border-radius: 0 100px 0 0;
-}
-
-div.control#blue {
-  background: blue;
-  border-radius: 0 0 0 100px;
-    -moz-border-radius: 0 0 0 100px;
-    -webkit-border-radius: 0 0 0 100px;
-}
-
-div.control#yellow{
-  background: yellow;
-  border-radius: 0 0 100px 0;
-    -moz-border-radius: 0 0 100px 0;
-    -webkit-border-radius: 0 0 100px 0;
+@keyframes textWarp {
+  0%, 100% {
+    font-size: 39px;
+    opacity: 1.0;}
+  50% {
+    font-size: 40px;
+    opacity: 0.9;
+  }
 }

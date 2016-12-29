@@ -1,0 +1,22 @@
+playRandom had a bug where it won't populate the 0th index of the game array even when open
+//if it results in a draw
+
+
+//board: ["X",0,"X","O",0,0,0,0,0]
+  //board:["X",0,0,0,"X",0,0,0,0] //3x3 grid.
+  //board:[0,0,0,0,0,0,0,0,0]
+ // board:[0, "X", "O", "X", "X", "O", "O", "X", "O"]
+  
+
+  document.ready tester
+
+  /*  for (var i=0;i<14;i++){
+    var token;
+    (i%2==0) ? token="X" : token="O";
+    if(!boardFull()){
+      console.log(GO.board);
+      computerMove(token);
+      console.log(GO.board);
+      if (checkWinner(token)) {break;}
+    }
+  }/*

@@ -47,8 +47,8 @@ function resetGame() {
   GO.turn=0;
   GO.isOver=false;
   var denom=GO.gameCount-GO.draws
-  var xWinPercent=((GO.X_wins/denom)*100).toFixed(1);
-  var oWinPercent=((GO.O_wins/denom)*100).toFixed(1);
+  var xWinPercent=Math.round((GO.X_wins/denom)*100);
+  var oWinPercent=Math.round((GO.O_wins/denom)*100);
   addText("#X wins: "+GO.X_wins+"<br />#O wins: "+GO.O_wins+"<br />"+"%X wins: "+xWinPercent+"%<br />%O wins: "+
   oWinPercent+"%"); //reset text to show wins
   for (var i=0;i<=GO.board.length;i++) {

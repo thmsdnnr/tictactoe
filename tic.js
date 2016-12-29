@@ -14,6 +14,7 @@ var GO = {
   isOver:false,
   O_wins:0,
   X_wins:0,
+  draws:0,
   gameCount:0
 };
 
@@ -45,9 +46,11 @@ function resetGame() {
   GO.gameCount++;
   GO.turn=0;
   GO.isOver=false;
-  addText("#X wins: "+GO.X_wins+"<br />#O wins: "+GO.O_wins+"<br />"+"%X wins: "+
-  ((GO.X_wins/GO.gameCount).toFixed(2))*100+"%<br />%O wins: "+
-  ((GO.O_wins/GO.gameCount).toFixed(2))*100+"%"); //reset text to show wins
+  var denom=GO.gameCount-GO.draws
+  var xWinPercent=((GO.X_wins/denom)*100).toFixed(1);
+  var oWinPercent=((GO.O_wins/denom)*100).toFixed(1);
+  addText("#X wins: "+GO.X_wins+"<br />#O wins: "+GO.O_wins+"<br />"+"%X wins: "+xWinPercent+"%<br />%O wins: "+
+  oWinPercent+"%"); //reset text to show wins
   for (var i=0;i<=GO.board.length;i++) {
       $(GO.arrWords[i]).removeClass("winCells");
     }
@@ -87,6 +90,7 @@ function doWeGoOn() {
   if (boardFull()&&(!checkWinner())) {
     addText("IT'S A DRAW BRAH"); 
     GO.isOver=true;
+    GO.draws++;
     setTimeout(resetGame,GO.DRAW_PAUSE);
   }
 }

@@ -81,7 +81,6 @@ function doWeGoOn() {
   if (winner) {
     addText("<em>Winner: "+GO.board[winner[0]]+"</em>");
     highlightWin(winner);
-    console.log("O_wins:" +GO.O_wins);
     var tok=GO.board[winner[0]]+"_wins";
     GO[tok]++;
     GO.isOver=true;
